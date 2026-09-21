@@ -1,30 +1,27 @@
-from blog.datos import posts
-
-
-from blog.datos import estados_post
+# blog/validaciones.py
 
 def validar_post(post):
-    claves = ("id", "titulo", "contenido", "autor", "tags", "estado")
    
-    for clave in claves:
-        if clave not in post:
-            return False, f"Error: falta la clave obligatoria '{clave}'."
+    errores = []
+
+    titulo = getattr(post, 'titulo', None) if not isinstance(post, dict) else post.get('titulo')
+    contenido = getattr(post, 'contenido', None) if not isinstance(post, dict) else post.get('contenido')
+    estado = getattr(post, 'estado', None) if not isinstance(post, dict) else post.get('estado')
+
    
-    if not isinstance(post["titulo"], str) or not post["titulo"].strip():
-        return False, "Error: el título no puede estar vacío."
-       
-    if not isinstance(post["tags"], (set, list, tuple)):
-        return False, "Error: 'tags' debe ser una colección (set o lista)."
+    if not titulo or str(titulo).strip() == "":
+        errores.append("El título no puede estar vacío.")
+
    
-    if not isinstance(post["autor"], dict):
-            return False, "El campo 'autor' debe ser un diccionario."
-    if "nombre" not in post["autor"] or not str(post["autor"]["nombre"]).strip():
-            return False, "El diccionario 'autor' debe contener la clave 'nombre'."
-    if post["estado"] not in estados_post:
-            return False, f"El estado '{post['estado']}' no es válido. Estados permitidos: {estados_post}."
-   
+    if not contenido or str(contenido).strip() == "":
+        errores.append("El contenido no puede estar vacío.")
 
+  
+    estados_permitidos = ("borrador", "publicado", "archivado")
+    if estado not in estados_permitidos:
+        errores.append(f"El estado '{estado}' no es válido (Debe ser borrador, publicado o archivado).")
 
+    if errores:
+        return False, " ".join(errores)
 
-
-    return True, "Se valido post"
+    return True, "El post es válido."

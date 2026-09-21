@@ -2,9 +2,13 @@ from blog.datos import posts
 from blog.menu import mostrar_menu
 from blog.operaciones import buscar_por_titulo, filtrar_por_tag, listar_posts
 from blog.validaciones import validar_post
-
+from blog.modelos import Autor
+from blog.modelos import Post
+from blog.modelos import Blog
 
 def main():
+
+    mi_blog=Blog(posts)
     while True:
         opcion=mostrar_menu()
 
@@ -51,6 +55,19 @@ def main():
 
 
         elif opcion == 4:
+            print("\n--- Crear nuevo post ---")
+            titulo=input("Ingrese el titulo del post:").strip()
+            contenido=input("Ingrese el contenido del post:").strip()
+            estado="borrador"
+            tags=None
+            autor_actual= Autor(nombre="Pablo Nuñez",bio="Desarrollador Python")
+            nuevo_post=Post(titulo=titulo, contenido=contenido, estado=estado, autor=autor_actual, tags=tags)
+            mi_blog.crear_post(nuevo_post)
+
+
+
+        
+        elif opcion == 5:
             print("\n--- Validando publicaciones ---")
             for i, post in enumerate(posts, start=1):
                 try:
@@ -63,17 +80,23 @@ def main():
                     print(f"Post {i}: error inesperado - {e}")
 
 
+        elif opcion == 6:
+            print("\n--- Guardando publicaciones en JSON ---")
+            mi_blog.guardar_posts_en_json(mi_blog.posts, "posts.json")
+            print("Publicaciones guardadas correctamente en posts.json")
+            
+            
 
 
-        elif opcion == 5:
-            print("\nGracias por usar el sistema del blog. ¡Hasta luego!")
+        elif opcion == 7:
+            print("\n--- Gracias por utilizar el programa---")
             break
-
 
 
 
         else:
             print("Opción inválida, intenta de nuevo")
+            
 
 
 
